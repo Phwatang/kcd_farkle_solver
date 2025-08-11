@@ -31,35 +31,33 @@ Now we start defining outcome spaces. Given a subset of dice $\delta \subseteq D
  - Let $\omega \in \Omega_\delta$ represent a distinct sample outcome of the diceset $\delta$
     - $\omega$ encodes information of the outcome of dice in $\delta$ but also shows what dice are missing
     - E.g if $\delta = \lbrace d_1, d_2 \rbrace$, then a possible $\omega$ could be:
-      $$
-      \omega_\text{example} = \lbrace d_1 = 2, d_2 = 5, d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace
-      $$
+      
+      $$\omega_\text{example} = \lbrace d_1 = 2, d_2 = 5, d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace$$
+      
     - The powerset $\mathcal{P}(\omega)$ will have a modified definition. It will be all possible selections/retentions of dice that are present. E.g
-      $$
-      \lbrace d_1 = 2, d_2 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example}) \\
-      \lbrace d_2 = 5, d_1 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example}) \\
-      \lbrace d_1 = d_2 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example}) \\
-      $$
+      
+      $$\lbrace d_1 = 2, d_2 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example})$$ \
+      $$\lbrace d_2 = 5, d_1 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example})$$ \
+      $$\lbrace d_1 = d_2 = d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace \in \mathcal{P}(\omega_\text{example})$$ 
 
 We will also define one useful helper functions:
  - Let $\text{Origin}: \Omega \to \mathcal{P}(D)$ be the mapping between a dice sample to the diceset it must have come from.
     - Using the $\omega_\text{example}$ example stated before then $\text{Origin}(\omega_\text{example}) = \lbrace d_1, d_2 \rbrace$
 
 We now start defining scoring functions to be able to playout the farkle game:
- - During a turn of farkle, we roll dice and then afterwards select the dice that contribute to our score. To compute the scoring calculation, define $\text{Score}: \Omega \to \N$ represent the farkle score gained from a selected subset of a dice sample.
+ - During a turn of farkle, we roll dice and then afterwards select the dice that contribute to our score. To compute the scoring calculation, define $\text{Score}: \Omega \to \mathbb{N}$ represent the farkle score gained from a selected subset of a dice sample.
     - If $\omega$ is an "invalid" selection then $\text{Score}(\omega) = 0$
     - Using the same $\omega$ example from before, we could select just dice $d_2$. Our selection would be:
-      $$
-      \omega_\text{select} = \lbrace d_2 = 5, d_1=d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace
-      $$
-      And so the score would be $\text{Score}(\omega_\text{select}) = 50$.
+      
+      $$\omega_\text{sel} = \lbrace d_2 = 5, d_1=d_3 = d_4 = d_5 = d_6 = \text{Missing} \rbrace$$ 
+      
+      And so the score would be $\text{Score}(\omega_\text{sel}) = 50$.
 
       Including both $d_1$ and $d_2$ would be an invalid selection. I.e $\text{Score}(\omega_\text{example}) = 0$
 
- - Let $\text{Best}:\Omega_\delta \to \N$ represent the greatest possible Farkle score possible out of all possible selections from a given dice sample. I.e
-   $$
-   \text{Best}(\omega) = \max \lbrace \text{Score}(\omega'): \omega' \in \mathcal{P}(\omega) \rbrace
-   $$
+ - Let $\text{Best}:\Omega_\delta \to \mathbb{N}$ represent the greatest possible Farkle score possible out of all possible selections from a given dice sample. I.e
+   
+   $$\text{Best}(\omega) = \max \lbrace \text{Score}(\omega'): \omega' \in \mathcal{P}(\omega) \rbrace$$
     - If $\text{Best}(\omega) = 0$ then no valid selections can be made. In other words, $\omega$ is a "bust".
 
 ## Optimising Expected Return
@@ -68,9 +66,8 @@ We will let $\text{Optimal}(P, \delta)$ represent the expected score gain if pla
  - $\delta$ - The set of dice (and their associated probability mass functions) to roll with
 
 Note that $\text{Optimal}(P, \delta)$ represents expected score **gain**. In otherwords, if a player is currently within a round with a score of $P$, set $\delta$ dice remaining and is using this strategy, their **expected final score** for the round would be:
-$$
-\mathbb{E}(P_\text{final}) = P + \text{Optimal}(P, \delta)
-$$
+
+$$\mathbb{E}(P_\text{final}) = P + \text{Optimal}(P, \delta)$$
 
 To further clarify, at the start of a round, the expected score at the end of the round would be $\text{Optimal}(0, D)$.
 
@@ -82,35 +79,33 @@ We will now analyse the expected score gain from these two choices.
 
 ### Maximising $\text{Terminate}$
 To maximise decision $\text{Terminate}$, we simply want to select dice to create the highest scoring dice hands. In otherwords:
-$$
-\text{Terminate}  = \max \lbrace \text{Score}(\omega'): \omega' \in \mathcal{P}(\omega) \rbrace = \text{Best}(\omega)
-$$
+
+$$\text{Terminate}  = \max \lbrace \text{Score}(\omega'): \omega' \in \mathcal{P}(\omega) \rbrace = \text{Best}(\omega)$$
 
 ### Maximising $\text{Hold}$
 When choosing dice, we have to keep in mind that the dice we don't choose also affect our expected scores going into the future rolls.
 
 Assuming we are using the same optimal strategy going into the next roll, the expected score gain of decision $\text{Hold}$ is:
-$$
+```math
 \begin{align*}
 \text{Hold} = & \max \lbrace \\
 & \quad \text{Score}(\omega') + 
 \text{Optimal}(P + \text{Score}(\omega'), \delta \backslash \text{Origin}(w')): \omega' \in \mathcal{P}(\omega)
 \\ &\rbrace
 \end{align*}
-$$
+```
 
 ### Combining Together
 Obviously now the optimal strategy to to simply select the higher of option $\text{Terminate}$ or $\text{Hold}$ for all samples $\omega$. We also need to subtract off the expected loss from busting. This means:
-$$
-\text{Optimal}(P, \delta) = \mathbb{E}(\max \lbrace \text{Terminate}, \text{Hold} \rbrace ) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega_\delta)P
-$$
+
+$$\text{Optimal}(P, \delta) = \mathbb{E}(\max \lbrace \text{Terminate}, \text{Hold} \rbrace ) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega_\delta)P$$
 
 We now see that to compute $\text{Optimal}(P, \delta)$, we need to compute $\text{Hold}$. However $\text{Hold}$ requires us to compute $\text{Optimal}(...)$ again but for differing values of $P$ and $\delta$.
 
-We also note that when the player has no dice left ($\delta = \empty$), due to all the dice being used to form scoring hands, the player wraps back round to having all 6 dice again to roll with. Therefore:
-$$
-\text{Optimal}(P, \empty) = \text{Optimal}(P, D)
-$$
+We also note that when the player has no dice left ($\delta = \emptyset$), due to all the dice being used to form scoring hands, the player wraps back round to having all 6 dice again to roll with. Therefore:
+
+$$\text{Optimal}(P, \emptyset) = \text{Optimal}(P, D)$$
+
  - With how $\text{Hold}$ and $\text{Terminate}$ have been defined, this does cause a logical contradiction. However, I've defined things in this order to make things concise. $\text{Hold}$ and $\text{Terminate}$ can easilly be redefined to fix the contradiction.
 
 Clearly then, we need some starting datapoints for the output of $\text{Optimal}(...)$ to build out from. We do not have these however **leading us to a bootstrapping problem**.
@@ -123,26 +118,26 @@ Obviously as $n \to \infty$, we should expect $\text{Optimal}_n$ and $\text{Opti
 To analyse this strategy, we can use the same option $\text{Terminate}$ and $\text{Hold}$ approach as before:
  - Option $\text{Terminate}$ stays the same
  - Option $\text{Hold}$ is slightly tweaked. Going into the next roll we would have used up $1$ roll in our $n$ turn budget. Therefore
-   $$
-   \begin{align*}
-   \text{Hold}_n = & \max \lbrace \\
-   & \quad \text{Score}(\omega') + 
-   \text{Optimal}_{n-1}(P + \text{Score}(\omega'), \delta \backslash \text{Origin}(w')): \omega' \in \mathcal{P}(\omega)
-   \\ &\rbrace
-   \end{align*}
-   $$
+```math
+\begin{align*}
+\text{Hold}_n = & \max \lbrace \\
+& \quad \text{Score}(\omega') + 
+\text{Optimal}_{n-1}(P + \text{Score}(\omega'), \delta \backslash \text{Origin}(w')): \omega' \in \mathcal{P}(\omega)
+\\ &\rbrace
+\end{align*}
+```
 
 We now also realise the trivial case of $\text{Optimal}_1$. In this case we only have 1 roll to use and thus option $\text{Terminate}$ is only available. This means the associated expected score gain from this is just:
-$$
+```math
 \begin{align*}
 \text{Optimal}_1(P, \delta) &= \mathbb{E}(\text{Terminate}) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega_\delta)P \\
 &= \mathbb{E}(\text{Best}) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega_\delta)P
 \end{align*}
-$$
+```
  - This is simple to compute for all possible $P$ and $\delta$ values combinations
 
 With $\text{Optimal}_1$ being solved, we can begin to solve for $\text{Optimal}_2$, $\text{Optimal}_3$, etc using the recurrence relation:
-$$
+```math
 \begin{align*}
 \text{Optimal}_n(P, \delta) &= \mathbb{E}(\max \lbrace \text{Terminate}, \text{Hold}_n \rbrace ) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega)P \\
 &= \mathbb{E}(
@@ -152,12 +147,11 @@ $$
 \text{Optimal}_{n-1}(P + \text{Score}(\omega'), \delta \backslash \text{Origin}(w')): \omega' \in \mathcal{P}(\omega) \rbrace \\
 & \quad \rbrace : \omega \in \Omega_\delta) - \mathbb{P}(\text{Best}(\omega) = 0 ~\text{for}~ \omega \in \Omega_\delta)P
 \end{align*}
-$$
+```
 
 Again we also need to factor in the player wrapping back round to all $6$ dice when all dice being have been used. Therefore, for all $n$:
-$$
-\text{Optimal}_n(P, \empty) = \text{Optimal}_n(P, D)
-$$
+
+$$\text{Optimal}_n(P, \emptyset) = \text{Optimal}_n(P, D)$$
 
 ## Computational Feasibility
 Even with the iterative method described before, computing a $\text{Optimal}_n$ seems practically impossible at first glance.
